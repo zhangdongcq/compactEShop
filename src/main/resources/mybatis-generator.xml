@@ -4,9 +4,6 @@
         "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd" >
 <generatorConfiguration>
 
-    <!-- !!!! Driver Class Path !!!! -->
-    <!--<classPathEntry location="C:\Users\Administrator\.IntelliJIdea2016.1\config\jdbc-drivers\mysql-connector-java-5.1.35-bin.jar"/>-->
-
     <context id="context" targetRuntime="MyBatis3">
         <commentGenerator>
             <property name="suppressAllComments" value="false"/>
