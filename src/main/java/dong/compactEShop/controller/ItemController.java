@@ -14,10 +14,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller("/item")
 @RequestMapping("/item")
-@CrossOrigin
+@CrossOrigin(allowCredentials = "true", allowedHeaders = "*")
+
 public class ItemController extends BaseController {
 
     @Autowired
@@ -45,7 +48,7 @@ public class ItemController extends BaseController {
         return CommonReturnType.create(itemVO, "success");
     }
 
-    //Item List
+    //Item detail
     @RequestMapping(value = "/get", method = {RequestMethod.GET})
     @ResponseBody
     public CommonReturnType getItem(
@@ -64,6 +67,25 @@ public class ItemController extends BaseController {
         ItemVO itemVO = new ItemVO();
         BeanUtils.copyProperties(itemModel, itemVO);
         return itemVO;
+    }
+
+
+    //Item List
+    @RequestMapping(value = "/list", method = {RequestMethod.GET})
+    @ResponseBody
+    public CommonReturnType listItem() throws BusinessException {
+        List<ItemModel> itemModelList = itemService.listItem();
+        if(itemModelList.size()==0 || itemModelList == null){
+            throw new BusinessException(EmBusinessError.ITEM_NOT_EXIST);
+        }
+
+        //Convert itemVO list to itemModel list via stream() API
+        List<ItemVO> itemVOList = itemModelList.stream().map(itemModel -> {
+            ItemVO itemVO = this.convertItemVOFromItemModel(itemModel);
+            return itemVO;
+        }).collect(Collectors.toList());
+
+        return CommonReturnType.create(itemVOList, "success");
     }
 
 }
