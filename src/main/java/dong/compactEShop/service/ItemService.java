@@ -1,0 +1,20 @@
+package dong.compactEShop.service;
+
+import dong.compactEShop.error.BusinessException;
+import dong.compactEShop.service.model.ItemModel;
+
+import java.util.List;
+
+public interface ItemService {
+
+    //Create item
+    ItemModel createItem(ItemModel itemModel) throws BusinessException;
+
+
+    //Item list
+    List<ItemModel> listItem();
+
+    //Item detail
+    ItemModel getItemById(Integer id);
+
+}

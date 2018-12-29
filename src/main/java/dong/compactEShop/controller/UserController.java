@@ -27,7 +27,7 @@ import java.util.Random;
 @Controller("user")
 @RequestMapping("/user")
 @CrossOrigin(allowCredentials = "true", allowedHeaders = "*")
-public class UserController extends BaseController{
+public class UserController extends BaseController {
 
     @Autowired
     private UserService userService;
@@ -37,12 +37,12 @@ public class UserController extends BaseController{
     //API for user login (Login with phone number)
     @RequestMapping(value = "/login", method = {RequestMethod.POST}, consumes = {CONTENT_TYPE_FORMED})
     @ResponseBody
-    public CommonReturnType login(@RequestParam(name="telphone")String telphone,
-                                  @RequestParam(name="password")String password) throws BusinessException, UnsupportedEncodingException, NoSuchAlgorithmException {
+    public CommonReturnType login(@RequestParam(name = "telphone") String telphone,
+                                  @RequestParam(name = "password") String password) throws BusinessException, UnsupportedEncodingException, NoSuchAlgorithmException {
         //Parameters validation
-        if(org.apache.commons.lang3.StringUtils.isEmpty(telphone)||
-                StringUtils.isEmpty(password)){
-            throw new BusinessException(EmBusinessError.PARAMETER_VALIDATION_ERROR,"wrong phone number or password");
+        if (org.apache.commons.lang3.StringUtils.isEmpty(telphone) ||
+                StringUtils.isEmpty(password)) {
+            throw new BusinessException(EmBusinessError.PARAMETER_VALIDATION_ERROR, "wrong phone number or password");
         }
 
         //Service for user login
@@ -55,35 +55,33 @@ public class UserController extends BaseController{
     }
 
 
-
-
     //API for user registration
     @RequestMapping(value = "/register", method = {RequestMethod.POST}, consumes = {CONTENT_TYPE_FORMED})
     @ResponseBody
-    public CommonReturnType register(@RequestParam(name="telphone")String telphone,
-                                     @RequestParam(name="optCode")String optCode,
-                                     @RequestParam(name="name")String name,
-                                     @RequestParam(name="gender")Integer gender,
-                                     @RequestParam(name="age")Integer age,
-                                     @RequestParam(name="password")String password
-                                     ) throws BusinessException, UnsupportedEncodingException, NoSuchAlgorithmException {
+    public CommonReturnType register(@RequestParam(name = "telphone") String telphone,
+                                     @RequestParam(name = "optCode") String optCode,
+                                     @RequestParam(name = "name") String name,
+                                     @RequestParam(name = "gender") Integer gender,
+                                     @RequestParam(name = "age") Integer age,
+                                     @RequestParam(name = "password") String password
+    ) throws BusinessException, UnsupportedEncodingException, NoSuchAlgorithmException {
         //Verify the opt code against user phone number
-            String optCodeInSession = (String)this.httpServletRequest.getSession().getAttribute(telphone);
-            if(!com.alibaba.druid.util.StringUtils.equals(optCode, optCodeInSession)){
-                throw new BusinessException(EmBusinessError.PARAMETER_VALIDATION_ERROR, "Two opt codes are mismatch!");
-            }
+        String optCodeInSession = (String) this.httpServletRequest.getSession().getAttribute(telphone);
+        if (!com.alibaba.druid.util.StringUtils.equals(optCode, optCodeInSession)) {
+            throw new BusinessException(EmBusinessError.PARAMETER_VALIDATION_ERROR, "Two opt codes are mismatch!");
+        }
 
         //User Registration
-            UserModel userModel = new UserModel();
-            userModel.setName(name);
-            userModel.setAge(age);
-            userModel.setGender(new Byte(String.valueOf(gender.intValue())));
-            userModel.setTelphone(telphone);
-            userModel.setRegisterMode("byphone");
-            userModel.setEncrptPassword(this.EncodeByMd5(password));
-            userModel.setThirdPartyId("1");
-            userService.register(userModel);
-            return CommonReturnType.create(null);
+        UserModel userModel = new UserModel();
+        userModel.setName(name);
+        userModel.setAge(age);
+        userModel.setGender(new Byte(String.valueOf(gender.intValue())));
+        userModel.setTelphone(telphone);
+        userModel.setRegisterMode("byphone");
+        userModel.setEncrptPassword(this.EncodeByMd5(password));
+        userModel.setThirdPartyId("1");
+        userService.register(userModel);
+        return CommonReturnType.create(null);
     }
 
     public String EncodeByMd5(String str) throws UnsupportedEncodingException, NoSuchAlgorithmException {
@@ -95,14 +93,10 @@ public class UserController extends BaseController{
     }
 
 
-
-
-
-
     //API for opt sms
     @RequestMapping(value = "/getopt", method = {RequestMethod.POST}, consumes = {CONTENT_TYPE_FORMED})
     @ResponseBody
-    public CommonReturnType getOtp(@RequestParam(name="telphone")String telphone){
+    public CommonReturnType getOtp(@RequestParam(name = "telphone") String telphone) {
         //Generating OTP code
 
         Random random = new Random();
@@ -115,19 +109,18 @@ public class UserController extends BaseController{
 
 
         //Send OTP code to user via sms service(Ignore)
-        System.out.println("telphone="+telphone+"&optCode="+optCode);
+        System.out.println("telphone=" + telphone + "&optCode=" + optCode);
         return CommonReturnType.create(null);
     }
 
 
-
     @RequestMapping("/get")
     @ResponseBody
-    public CommonReturnType getUser(@RequestParam(name="id")Integer id) throws BusinessException {
+    public CommonReturnType getUser(@RequestParam(name = "id") Integer id) throws BusinessException {
         //Invoking service to get domain object
         UserModel userModel = userService.getUserById(id);
         //If user does not exist, throw exception
-        if(userModel==null){
+        if (userModel == null) {
             throw new BusinessException(EmBusinessError.USER_NOT_EXIST);
         }
         //Converts domain object to frontend user object
@@ -136,8 +129,8 @@ public class UserController extends BaseController{
         return CommonReturnType.create(userVO);
     }
 
-    private UserVO convertFromModel(UserModel userModel){
-        if(userModel == null) return null;
+    private UserVO convertFromModel(UserModel userModel) {
+        if (userModel == null) return null;
         UserVO userVO = new UserVO();
         BeanUtils.copyProperties(userModel, userVO);
         return userVO;

@@ -31,7 +31,7 @@ public class UserServiceImpl implements UserService {
     public UserModel getUserById(Integer id) {
         //Invoking userDOMapper to get dataobject based on given id
         UserDO userDO = userDOMapper.selectByPrimaryKey(id);
-        if(userDO == null) return null;
+        if (userDO == null) return null;
         //Getting encrypted password by user id
         UserPasswordDO userPasswordDO = userPasswordDOMapper.selectByUserId(userDO.getId());
 
@@ -43,22 +43,22 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void register(UserModel userModel) throws BusinessException {
-        if(userModel == null){
+        if (userModel == null) {
             throw new BusinessException(EmBusinessError.PARAMETER_VALIDATION_ERROR);
         }
 
         //Validation of fields of user model.
         ValidationResult validationResult = validator.validate(userModel);
-        if(validationResult.isHasErrors()){
+        if (validationResult.isHasErrors()) {
             throw new BusinessException(EmBusinessError.PARAMETER_VALIDATION_ERROR, validationResult.getErrMsg());
         }
 
         //Convert model -> dataobject
         UserDO userDO = convertFromModel(userModel);
-        try{
+        try {
             userDOMapper.insertSelective(userDO);
-        }catch (DuplicateKeyException ex){
-            throw new BusinessException(EmBusinessError.PARAMETER_VALIDATION_ERROR,"The user with same phone number already exist.");
+        } catch (DuplicateKeyException ex) {
+            throw new BusinessException(EmBusinessError.PARAMETER_VALIDATION_ERROR, "The user with same phone number already exist.");
         }
         userModel.setId(userDO.getId());
         UserPasswordDO userPasswordDO = convertPasswordFromModel(userModel);
@@ -71,39 +71,40 @@ public class UserServiceImpl implements UserService {
     public UserModel validateLogin(String telphone, String encrptPassword) throws BusinessException {
         //Get user detail against telphone number
         UserDO userDo = userDOMapper.selectByTelphone(telphone);
-        if(userDo == null){
+        if (userDo == null) {
             throw new BusinessException(EmBusinessError.USER_LOGIN_FAIL);
         }
         UserPasswordDO userPasswordDO = userPasswordDOMapper.selectByUserId(userDo.getId());
         UserModel userModel = convertFromDataObject(userDo, userPasswordDO);
         //Validate the password against that in db
-        if(com.alibaba.druid.util.StringUtils.equals(userModel.getEncrptPassword(), encrptPassword)){
+        if (com.alibaba.druid.util.StringUtils.equals(userModel.getEncrptPassword(), encrptPassword)) {
             throw new BusinessException(EmBusinessError.USER_LOGIN_FAIL);
         }
         return userModel;
     }
 
-    private UserPasswordDO convertPasswordFromModel(UserModel userModel){
-        if(userModel == null) return null;
+    private UserPasswordDO convertPasswordFromModel(UserModel userModel) {
+        if (userModel == null) return null;
         UserPasswordDO userPasswordDO = new UserPasswordDO();
         userPasswordDO.setEncrptPassword(userModel.getEncrptPassword());
         userPasswordDO.setUserId(userModel.getId());
         return userPasswordDO;
     }
-    private UserDO convertFromModel(UserModel userModel){
-        if(userModel == null) return null;
+
+    private UserDO convertFromModel(UserModel userModel) {
+        if (userModel == null) return null;
         UserDO userDO = new UserDO();
         BeanUtils.copyProperties(userModel, userDO);
         return userDO;
     }
 
-    private UserModel convertFromDataObject(UserDO userDO, UserPasswordDO userPasswordDO){
-        if(userDO == null){
+    private UserModel convertFromDataObject(UserDO userDO, UserPasswordDO userPasswordDO) {
+        if (userDO == null) {
             return null;
         }
         UserModel userModel = new UserModel();
         BeanUtils.copyProperties(userDO, userModel);
-        if(userPasswordDO != null){
+        if (userPasswordDO != null) {
             userModel.setEncrptPassword(userPasswordDO.getEncrptPassword());
         }
         return userModel;
