@@ -6,6 +6,7 @@ import dong.compactEShop.error.EmBusinessError;
 import dong.compactEShop.response.CommonReturnType;
 import dong.compactEShop.service.UserService;
 import dong.compactEShop.service.model.UserModel;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.tomcat.util.security.MD5Encoder;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,29 @@ public class UserController extends BaseController{
     private UserService userService;
     @Autowired
     private HttpServletRequest httpServletRequest;
+
+    //API for user login (Login with phone number)
+    @RequestMapping(value = "/login", method = {RequestMethod.POST}, consumes = {CONTENT_TYPE_FORMED})
+    @ResponseBody
+    public CommonReturnType login(@RequestParam(name="telphone")String telphone,
+                                  @RequestParam(name="password")String password) throws BusinessException, UnsupportedEncodingException, NoSuchAlgorithmException {
+        //Parameters validation
+        if(org.apache.commons.lang3.StringUtils.isEmpty(telphone)||
+                StringUtils.isEmpty(password)){
+            throw new BusinessException(EmBusinessError.PARAMETER_VALIDATION_ERROR,"wrong phone number or password");
+        }
+
+        //Service for user login
+        UserModel userModel = userService.validateLogin(telphone, this.EncodeByMd5(password));
+        //Record credential in session
+        this.httpServletRequest.getSession().setAttribute("IS_LOGIN", true);
+        this.httpServletRequest.getSession().setAttribute("LOG_USER", userModel);
+
+        return CommonReturnType.create(null);
+    }
+
+
+
 
     //API for user registration
     @RequestMapping(value = "/register", method = {RequestMethod.POST}, consumes = {CONTENT_TYPE_FORMED})

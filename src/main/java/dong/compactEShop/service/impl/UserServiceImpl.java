@@ -63,6 +63,23 @@ public class UserServiceImpl implements UserService {
         return;
     }
 
+
+    @Override
+    public UserModel validateLogin(String telphone, String encrptPassword) throws BusinessException {
+        //Get user detail against telphone number
+        UserDO userDo = userDOMapper.selectByTelphone(telphone);
+        if(userDo == null){
+            throw new BusinessException(EmBusinessError.USER_LOGIN_FAIL);
+        }
+        UserPasswordDO userPasswordDO = userPasswordDOMapper.selectByUserId(userDo.getId());
+        UserModel userModel = convertFromDataObject(userDo, userPasswordDO);
+        //Validate the password against that in db
+        if(com.alibaba.druid.util.StringUtils.equals(userModel.getEncrptPassword(), encrptPassword)){
+            throw new BusinessException(EmBusinessError.USER_LOGIN_FAIL);
+        }
+        return userModel;
+    }
+
     private UserPasswordDO convertPasswordFromModel(UserModel userModel){
         if(userModel == null) return null;
         UserPasswordDO userPasswordDO = new UserPasswordDO();
