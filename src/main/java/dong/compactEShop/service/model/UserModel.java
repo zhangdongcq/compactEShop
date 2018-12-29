@@ -1,13 +1,30 @@
 package dong.compactEShop.service.model;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
 public class UserModel {
     private Integer id;
+
+    @NotBlank(message = "Name could not be blank.")
     private String name;
+
+    @NotNull(message = "Please input gender.")
     private Byte gender;
+
+    @NotNull(message = "Please input age.")
+    @Min(value = 0, message = "Age should be greater than 0.")
+    @Max(value = 150, message = "Age should not greater than 150.")
     private Integer age;
+
+    @NotBlank(message = "telphone could not be blank.")
     private String telphone;
     private String registerMode;
     private String thirdPartyId;
+
+    @NotBlank(message = "Password could not be blank.")
     private String encrptPassword;
 
     public Integer getId() {

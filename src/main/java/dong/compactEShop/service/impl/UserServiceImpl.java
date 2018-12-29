@@ -8,6 +8,8 @@ import dong.compactEShop.error.BusinessException;
 import dong.compactEShop.error.EmBusinessError;
 import dong.compactEShop.service.UserService;
 import dong.compactEShop.service.model.UserModel;
+import dong.compactEShop.validator.ValidationResult;
+import dong.compactEShop.validator.ValidatorImpl;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +24,8 @@ public class UserServiceImpl implements UserService {
     private UserDOMapper userDOMapper;
     @Autowired
     private UserPasswordDOMapper userPasswordDOMapper;
+    @Autowired
+    private ValidatorImpl validator;
 
     @Override
     public UserModel getUserById(Integer id) {
@@ -42,12 +46,11 @@ public class UserServiceImpl implements UserService {
         if(userModel == null){
             throw new BusinessException(EmBusinessError.PARAMETER_VALIDATION_ERROR);
         }
-        if(StringUtils.isEmpty(userModel.getName())||
-                userModel.getGender() == null ||
-                userModel.getAge() == null ||
-                StringUtils.isEmpty(userModel.getTelphone())
-                ){
-            throw new BusinessException(EmBusinessError.PARAMETER_VALIDATION_ERROR);
+
+        //Validation of fields of user model.
+        ValidationResult validationResult = validator.validate(userModel);
+        if(validationResult.isHasErrors()){
+            throw new BusinessException(EmBusinessError.PARAMETER_VALIDATION_ERROR, validationResult.getErrMsg());
         }
 
         //Convert model -> dataobject
