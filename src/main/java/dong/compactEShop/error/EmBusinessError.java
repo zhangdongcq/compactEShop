@@ -6,6 +6,7 @@ public enum EmBusinessError implements CommonError{
     UNKNOWN_ERROR(100002, "Unknown Error,"),
     //Code starts with 10000 indicates user info related errors
     USER_NOT_EXIST(20001, "User does not exist."),
+    ITEM_NOT_EXIST(30001, "Item does not exist."),
     USER_LOGIN_FAIL(20002, "Wrong phone number or password.")
 
     ;

@@ -31,6 +31,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     @Transactional
+
     public ItemModel createItem(ItemModel itemModel) throws BusinessException {
         //Validate incoming params
         ValidationResult validationResult = validator.validate(itemModel);

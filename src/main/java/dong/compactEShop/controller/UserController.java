@@ -104,7 +104,7 @@ public class UserController extends BaseController {
         randomInt += 10000;
         String optCode = String.valueOf(randomInt);
 
-        //Join phone number with OTP code, binding the phone number in httpsession.
+        //Join phone number with OTP code, binding the phone number in http session.
         httpServletRequest.getSession().setAttribute(telphone, optCode);
 
 

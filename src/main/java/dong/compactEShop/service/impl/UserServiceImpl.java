@@ -35,7 +35,6 @@ public class UserServiceImpl implements UserService {
         //Getting encrypted password by user id
         UserPasswordDO userPasswordDO = userPasswordDOMapper.selectByUserId(userDO.getId());
 
-
         UserModel userModel = convertFromDataObject(userDO, userPasswordDO);
         return userModel;
     }
