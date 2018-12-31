@@ -40,7 +40,7 @@ public class UserController extends BaseController {
     public CommonReturnType login(@RequestParam(name = "telphone") String telphone,
                                   @RequestParam(name = "password") String password) throws BusinessException, UnsupportedEncodingException, NoSuchAlgorithmException {
         //Parameters validation
-        if (org.apache.commons.lang3.StringUtils.isEmpty(telphone) ||
+        if (StringUtils.isEmpty(telphone) ||
                 StringUtils.isEmpty(password)) {
             throw new BusinessException(EmBusinessError.PARAMETER_VALIDATION_ERROR, "wrong phone number or password");
         }

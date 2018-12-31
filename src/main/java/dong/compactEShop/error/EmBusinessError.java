@@ -1,13 +1,18 @@
 package dong.compactEShop.error;
 
 public enum EmBusinessError implements CommonError{
-    //Universal Error Type 00001
+    //Universal Error Type 10001
     PARAMETER_VALIDATION_ERROR(100001, "Illegal Parameters,"),
-    UNKNOWN_ERROR(100002, "Unknown Error,"),
-    //Code starts with 10000 indicates user info related errors
+    UNKNOWN_ERROR(200002, "Unknown Error,"),
+    //Code begin with 10000 indicates user info related errors
     USER_NOT_EXIST(20001, "User does not exist."),
+    USER_LOGIN_FAIL(20002, "Wrong phone number or password."),
+    USER_NOT_LOGIN(20003, "user is not login."),
+
+    //Code begin with 30000 indicates item infp
     ITEM_NOT_EXIST(30001, "Item does not exist."),
-    USER_LOGIN_FAIL(20002, "Wrong phone number or password.")
+    STOCK_NO_ENOUGH(30002, "No enough stock."),
+
 
     ;
 

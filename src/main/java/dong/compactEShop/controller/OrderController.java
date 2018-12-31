@@ -1,0 +1,40 @@
+package dong.compactEShop.controller;
+
+import dong.compactEShop.error.BusinessException;
+import dong.compactEShop.error.EmBusinessError;
+import dong.compactEShop.response.CommonReturnType;
+import dong.compactEShop.service.OrderService;
+import dong.compactEShop.service.model.OrderModel;
+import dong.compactEShop.service.model.UserModel;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import javax.servlet.http.HttpServletRequest;
+
+@Controller("order")
+@RequestMapping("/order")
+@CrossOrigin(allowCredentials = "true", allowedHeaders = "*")
+public class OrderController extends BaseController{
+
+    @Autowired
+    private OrderService orderService;
+    @Autowired
+    private HttpServletRequest httpServletRequest;
+
+    //Binding order transaction
+    @RequestMapping(value = "/createorder", method = {RequestMethod.POST}, consumes = {CONTENT_TYPE_FORMED})
+    public CommonReturnType createOrder(@RequestParam(name = "itemId")Integer itemId,
+                                        @RequestParam(name = "amount")Integer amount) throws BusinessException {
+        Boolean isLogin = (Boolean) httpServletRequest.getSession().getAttribute("IS_LOGIN");
+        if(isLogin == null || !isLogin.booleanValue()){
+            throw new BusinessException(EmBusinessError.USER_NOT_LOGIN);
+        }
+        UserModel userModel = (UserModel) httpServletRequest.getSession().getAttribute("LOG_USER");
+        OrderModel orderModel = orderService.createOrder(userModel.getId(), itemId, amount);
+        return CommonReturnType.create(null);
+    }
+}

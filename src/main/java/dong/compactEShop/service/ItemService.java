@@ -17,4 +17,8 @@ public interface ItemService {
     //Item detail
     ItemModel getItemById(Integer id);
 
+
+    //Reduce stock
+    boolean decreaseStock(Integer itemId, Integer amount) throws BusinessException;
+
 }

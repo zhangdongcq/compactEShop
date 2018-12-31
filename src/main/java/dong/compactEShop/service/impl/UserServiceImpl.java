@@ -29,7 +29,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserModel getUserById(Integer id) {
-        //Invoking userDOMapper to get dataobject based on given id
+        //Invoking userDOMapper to get data object based on given id
         UserDO userDO = userDOMapper.selectByPrimaryKey(id);
         if (userDO == null) return null;
         //Getting encrypted password by user id

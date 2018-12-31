@@ -104,6 +104,15 @@
       </if>
     </trim>
   </insert>
+
+  <select id="selectByTelphone" parameterType="java.lang.String" resultMap="BaseResultMap" >
+    select
+    <include refid="Base_Column_List" />
+    from user_info
+    where telphone = #{telphone,jdbcType=INTEGER}
+  </select>
+
+
   <update id="updateByPrimaryKeySelective" parameterType="dong.compactEShop.dataobject.UserDO">
     <!--
       WARNING - @mbg.generated
