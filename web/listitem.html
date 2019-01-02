@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Get Item List</title>
+	<link rel="stylesheet" type="text/css" href="static/assets/global/plugins/bootstrap/css/bootstrap.min.css"/><link rel="stylesheet" type="text/css" href="static/assets/global/css/components.css"/>
+	<link rel="stylesheet" type="text/css" href="static/assets/admin/pages/css/login.css"/>
+	<script type="text/javascript" src="static/assets/global/plugins/jquery-1.11.0.min.js"></script>
+</head>
+<body>
+	<div class="content">
+		<h3 class="form-title">List Item</h3>
+		<div class="table-responsive">
+			<table class="table">
+				<thead>
+					<tr>
+						<th>Title</th>
+						<th>Image</th>
+						<th>Description</th>
+						<th>Price</th>
+						<th>Stock</th>
+						<th>Sales</th>
+					</tr>
+					<tbody id="container">
+					</tbody>
+				</thead>
+			</table>
+	</div>
+</body>
+
+<script type="text/javascript">
+
+	//Bingding click event to send request
+	jQuery(document).ready(function(){
+		//Defining gload item attributes
+		var g_itemList = [];
+		$.ajax({
+			type:"GET",
+			url:"http://localhost:8080/item/list",
+			xhrFields:{withCredentials:true},
+			success:function(data) {
+				if(data.status == "success"){
+					g_itemList = data.data;
+					reloadDom();	
+				}else{
+					alert("Failed to get item list, Reason is "+data.data.errMsg);
+				}
+			},
+			error:function(data){
+				alert("Failed to get item list. Reason:" +data.responseText);
+			}
+		});
+
+		function reloadDom(){
+			for(var i = 0; i < g_itemList.length; i++){
+				var itemVO = g_itemList[i];
+				var dom = "<tr data-id = '"+itemVO.id+"' id = 'itemDetail"+itemVO.id+"'><td>"+itemVO.title+"</td><td><img style='width:100px;height:auto;' src='"+itemVO.imgUrl+"'/></td><td>"+itemVO.description+"</td><td>"+itemVO.price+"</td><td>"+itemVO.stock+"</td><td>"+itemVO.sales+"</td></tr>";
+				$("#container").append($(dom));
+				$("#itemDetail"+itemVO.id).on("click",function(e){
+					window.location.href="getitem.html?id="+$(this).data("id"); 
+				});
+			}
+		}
+	});
+
+
+</script>
+</html>
