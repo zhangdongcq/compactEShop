@@ -70,7 +70,8 @@ public class OrderServiceImpl implements OrderService {
         orderModel.setId(generateOrderNo());
         OrderDO orderDO = this.convertFromOrderModel(orderModel);
         orderDOMapper.insertSelective(orderDO);
-
+        //Increase sales record
+        itemService.increaseSales(itemId, amount);
         //4: Return result to front end
         return orderModel;
     }
@@ -119,6 +120,9 @@ public class OrderServiceImpl implements OrderService {
         if(orderModel == null) return null;
         OrderDO orderDO = new OrderDO();
         BeanUtils.copyProperties(orderModel, orderDO);
+        orderDO.setItemPrice(orderModel.getItemPrice().doubleValue());
+        orderDO.setOrderPrice(orderModel.getOrderPrice().doubleValue());
+
         return orderDO;
     }
 }

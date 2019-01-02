@@ -3,19 +3,17 @@ package dong.compactEShop.controller;
 import dong.compactEShop.error.BusinessException;
 import dong.compactEShop.error.EmBusinessError;
 import dong.compactEShop.response.CommonReturnType;
+import dong.compactEShop.service.ItemService;
 import dong.compactEShop.service.OrderService;
 import dong.compactEShop.service.model.OrderModel;
 import dong.compactEShop.service.model.UserModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 
-@Controller("order")
+@Controller("/order")
 @RequestMapping("/order")
 @CrossOrigin(allowCredentials = "true", allowedHeaders = "*")
 public class OrderController extends BaseController{
@@ -24,9 +22,12 @@ public class OrderController extends BaseController{
     private OrderService orderService;
     @Autowired
     private HttpServletRequest httpServletRequest;
+    @Autowired
+    private ItemService itemService;
 
     //Binding order transaction
     @RequestMapping(value = "/createorder", method = {RequestMethod.POST}, consumes = {CONTENT_TYPE_FORMED})
+    @ResponseBody
     public CommonReturnType createOrder(@RequestParam(name = "itemId")Integer itemId,
                                         @RequestParam(name = "amount")Integer amount) throws BusinessException {
         Boolean isLogin = (Boolean) httpServletRequest.getSession().getAttribute("IS_LOGIN");

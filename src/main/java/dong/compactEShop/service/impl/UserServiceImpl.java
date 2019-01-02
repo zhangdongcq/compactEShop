@@ -76,7 +76,7 @@ public class UserServiceImpl implements UserService {
         UserPasswordDO userPasswordDO = userPasswordDOMapper.selectByUserId(userDo.getId());
         UserModel userModel = convertFromDataObject(userDo, userPasswordDO);
         //Validate the password against that in db
-        if (com.alibaba.druid.util.StringUtils.equals(userModel.getEncrptPassword(), encrptPassword)) {
+        if (!com.alibaba.druid.util.StringUtils.equals(userModel.getEncrptPassword(), encrptPassword)) {
             throw new BusinessException(EmBusinessError.USER_LOGIN_FAIL);
         }
         return userModel;
