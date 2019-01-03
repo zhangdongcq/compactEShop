@@ -10,6 +10,12 @@
 <body class="login">
 	<div class="content">
 		<h3 class="form-title">Item Detail</h3>
+		<div id = "promoStartDateContainer" class="form-group">
+			<label style="color:red" class="control-label">Promo Time</label>
+			<div>
+				<lable style="color:red" class="control-lable" id="promoStartDate">
+			</div>
+		</div>
 		<div class="form-group">
 			<div>
 				<lable class="control-lable" id="title">
@@ -20,10 +26,16 @@
 				<lable class="control-lable" id="description">
 			</div>
 		</div>
-		<div class="form-group">
+		<div id="normalPriceContainer" class="form-group">
 			<label class="control-label">Price</label>
 			<div>
 				<lable class="control-lable" id="price">
+			</div>
+		</div>
+		<div id = "promoPriceContainer" class="form-group">
+			<label style="color:red" class="control-label">Promo Price</label>
+			<div>
+				<lable style="color:red" class="control-lable" id="promoPrice">
 			</div>
 		</div>
 		<div class="form-group">
@@ -66,6 +78,7 @@ var g_itemVO = [];
 				data:{
 					"itemId":g_itemVO.id,
 					"amount": 1,
+					"promoId": g_itemVO.promoId,
 				},
 				xhrFields:{withCredentials:true},
 				success:function(data) {
@@ -96,6 +109,7 @@ var g_itemVO = [];
 					if(data.status == "success"){
 						g_itemVO = data.data;
 						reloadDom();
+						setInterval(reloadDom, 1000);
 					}else{
 						alert("Failed to get item detail, reason is "+data.data.errMsg);
 					}
@@ -112,6 +126,25 @@ var g_itemVO = [];
 		$("#description").text(g_itemVO.description);
 		$("#imgUrl").attr("src", g_itemVO.imgUrl);
 		$("#sales").text(g_itemVO.sales);
+		if(g_itemVO.promoStatus == 1){//Campaign is ready to lanuch
+			var startTime = g_itemVO.startDate.replace(new RegExp("-", "gm"),"/");
+			startTime = (new Date(startTime)).getTime();
+			var nowTime = Date.parse(new Date());
+			var delta = (startTime - nowTime)/1000;
+			if(delta <= 0){
+				g_itemVO.promoStatus = 2;
+				reloadDom();
+			}
+			$("#promoStartDate").text("It is on the way: "+delta+" second.");
+			$("#promoPrice").text(g_itemVO.promoPrice);
+			$("#createorder").attr("disabled", true);
+		}else if(g_itemVO.promoStatus == 2){
+			$("#promoPrice").text(g_itemVO.promoPrice);
+			$("#promoStartDate").text("Hurry Up, Promo's in progress!");
+			$("#createorder").attr("disabled", false);
+			$("#normalPriceContainer").hide();
+
+		}
 
 
 

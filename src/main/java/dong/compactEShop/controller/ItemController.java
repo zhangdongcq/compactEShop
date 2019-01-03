@@ -8,6 +8,9 @@ import dong.compactEShop.error.EmBusinessError;
 import dong.compactEShop.response.CommonReturnType;
 import dong.compactEShop.service.impl.ItemServiceImpl;
 import dong.compactEShop.service.model.ItemModel;
+import dong.compactEShop.service.model.PromoModel;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -66,6 +69,16 @@ public class ItemController extends BaseController {
         if(itemModel == null) return null;
         ItemVO itemVO = new ItemVO();
         BeanUtils.copyProperties(itemModel, itemVO);
+
+        //The item is in promotion.
+        if(itemModel.getPromoModel() != null){
+            itemVO.setPromoStatus(itemModel.getPromoModel().getStatus());
+            itemVO.setPromoPrice(itemModel.getPromoModel().getPromoItemPrice());
+            itemVO.setStartDate(itemModel.getPromoModel().getStartDate().toString(DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")));
+            itemVO.setPromoId(itemModel.getPromoModel().getId());
+        }else{
+            itemVO.setPromoStatus(0);
+        }
         return itemVO;
     }
 

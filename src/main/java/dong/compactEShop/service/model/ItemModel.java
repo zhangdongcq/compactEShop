@@ -26,6 +26,14 @@ public class ItemModel {
     @NotBlank(message = "item image is required.")
     private String imgUrl;
 
+    /**
+     * Implementing aggregation model. If promoModel is not null;
+     * it participates promotion campaign.
+     * @return  PromoModel
+     */
+    private PromoModel promoModel;
+
+
     public Integer getId() {
         return id;
     }
@@ -80,5 +88,13 @@ public class ItemModel {
 
     public void setImgUrl(String imgUrl) {
         this.imgUrl = imgUrl;
+    }
+
+    public PromoModel getPromoModel() {
+        return promoModel;
+    }
+
+    public void setPromoModel(PromoModel promoModel) {
+        this.promoModel = promoModel;
     }
 }

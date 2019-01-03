@@ -37,9 +37,9 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    public OrderModel createOrder(Integer userId, Integer itemId, Integer amount) throws BusinessException {
+    public OrderModel createOrder(Integer userId, Integer itemId, Integer promoId, Integer amount) throws BusinessException {
 
-        //1: Validation -> Item exist? Legal User? Valid order amount?
+        //1: Validation -> Item exist? Legal User? Valid order amount? Valid promoId?
         ItemModel itemModel = itemService.getItemById(itemId);
         if(itemModel == null) {
             throw new BusinessException(EmBusinessError.ITEM_NOT_EXIST);
@@ -52,6 +52,18 @@ public class OrderServiceImpl implements OrderService {
             throw new BusinessException(EmBusinessError.PARAMETER_VALIDATION_ERROR, "The amount you put in order is invalid.");
         }
 
+        if(promoId!=null){
+            //Validate if the param promo matches the promoId in item
+            if(promoId.intValue() != itemModel.getPromoModel().getId()){
+                throw new BusinessException(EmBusinessError.PARAMETER_VALIDATION_ERROR,"promotion could not apply to this item!");
+            }else if(itemModel.getPromoModel().getStatus()!=2){//Validate the promotion start date, the promotion should already start.
+                throw new BusinessException(EmBusinessError.PARAMETER_VALIDATION_ERROR,"the promotion has not started yet.");
+            }
+
+        }
+
+
+
         //2: Reduce stock once order is made
         boolean result = itemService.decreaseStock(itemId, amount);
         if(!result){
@@ -63,8 +75,13 @@ public class OrderServiceImpl implements OrderService {
         orderModel.setUserId(userId);
         orderModel.setAmount(amount);
         orderModel.setItemId(itemId);
-        orderModel.setItemPrice(itemModel.getPrice());
-        orderModel.setOrderPrice(itemModel.getPrice().multiply(new BigDecimal(amount)));
+        if(promoId!=null){
+            orderModel.setItemPrice(itemModel.getPromoModel().getPromoItemPrice());
+        }else{
+            orderModel.setItemPrice(itemModel.getPrice());
+        }
+        orderModel.setPromoId(promoId);
+        orderModel.setOrderPrice((orderModel.getItemPrice().multiply(new BigDecimal(amount))));
 
         //Convert Order data object from order model
         orderModel.setId(generateOrderNo());

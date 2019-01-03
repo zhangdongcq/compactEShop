@@ -5,5 +5,7 @@ import dong.compactEShop.service.model.OrderModel;
 
 public interface OrderService {
 
-    OrderModel createOrder(Integer userId, Integer itemId, Integer amount) throws BusinessException;
+    //Get promoId in URL, validate it in createOrder API
+
+    OrderModel createOrder(Integer userId, Integer itemId, Integer promoId, Integer amount) throws BusinessException;
 }

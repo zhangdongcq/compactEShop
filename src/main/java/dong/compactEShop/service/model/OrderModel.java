@@ -21,7 +21,7 @@ public class OrderModel {
         this.itemPrice = itemPrice;
     }
 
-    //Item Unit Price
+    //Item Unit Price, if promoId is not null, it is promoted price
     private BigDecimal itemPrice;
 
     //Item Quantity
@@ -35,8 +35,19 @@ public class OrderModel {
         this.orderPrice = orderPrice;
     }
 
-    //Order total
+    //Order total, if promoId is not null, it is promoted price
     private BigDecimal orderPrice;
+
+    public Integer getPromoId() {
+        return promoId;
+    }
+
+    public void setPromoId(Integer promoId) {
+        this.promoId = promoId;
+    }
+
+    //If not null, the price is promoted price
+    private Integer promoId;
 
     public String getId() {
         return id;

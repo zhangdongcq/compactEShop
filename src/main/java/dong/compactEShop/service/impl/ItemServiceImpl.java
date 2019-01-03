@@ -7,7 +7,9 @@ import dong.compactEShop.dataobject.ItemStockDO;
 import dong.compactEShop.error.BusinessException;
 import dong.compactEShop.error.EmBusinessError;
 import dong.compactEShop.service.ItemService;
+import dong.compactEShop.service.PromoService;
 import dong.compactEShop.service.model.ItemModel;
+import dong.compactEShop.service.model.PromoModel;
 import dong.compactEShop.validator.ValidationResult;
 import dong.compactEShop.validator.ValidatorImpl;
 import org.springframework.beans.BeanUtils;
@@ -29,6 +31,8 @@ public class ItemServiceImpl implements ItemService {
     private ItemDOMapper itemDOMapper;
     @Autowired
     private ItemStockDOMapper itemStockDOMapper;
+    @Autowired
+    private PromoService promoService;
 
     @Override
     @Transactional
@@ -95,6 +99,13 @@ public class ItemServiceImpl implements ItemService {
 
         //Assembly a item model from item data object and item stock data object
         ItemModel itemModel = this.convertModelFromDataObject(itemDO, itemStockDO);
+
+        //Get campaign detail
+        PromoModel promoModel = promoService.getPromoByItemId(itemModel.getId());
+
+        if(promoModel != null && promoModel.getStatus()!=3){
+            itemModel.setPromoModel(promoModel);
+        }
         return itemModel;
     }
 
